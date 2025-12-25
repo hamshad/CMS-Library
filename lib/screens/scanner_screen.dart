@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import '../core/exceptions.dart';
 import '../core/theme.dart';
 import '../services/api_service.dart';
 import '../services/preferences_service.dart';
@@ -191,7 +192,11 @@ class _ScannerScreenState extends State<ScannerScreen>
 
       if (!mounted) return;
 
-      _showResultToast(response.isNotEmpty ? response : null, isSuccess: response.isNotEmpty);
+      _showResultToast(response, isSuccess: true);
+      _resetAll();
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      _showResultToast(e.message, isSuccess: false);
       _resetAll();
     } catch (e) {
       if (!mounted) return;
@@ -232,7 +237,11 @@ class _ScannerScreenState extends State<ScannerScreen>
 
       if (!mounted) return;
 
-      _showResultToast(response.isNotEmpty ? response : null, isSuccess: response.isNotEmpty);
+      _showResultToast(response, isSuccess: true);
+      _resetAll();
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      _showResultToast(e.message, isSuccess: false);
       _resetAll();
     } catch (e) {
       if (!mounted) return;
@@ -317,7 +326,7 @@ class _ScannerScreenState extends State<ScannerScreen>
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Colors.black.withValues(alpha: 0.85),
+                    Colors.black.withOpacity(0.85),
                     Colors.transparent,
                   ],
                 ),
@@ -338,7 +347,7 @@ class _ScannerScreenState extends State<ScannerScreen>
                       vertical: 8,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.15),
+                      color: Colors.white.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(24),
                     ),
                     child: Row(
@@ -377,7 +386,7 @@ class _ScannerScreenState extends State<ScannerScreen>
                     Container(
                       margin: const EdgeInsets.only(right: 8),
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.15),
+                        color: Colors.white.withOpacity(0.15),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: IconButton(
@@ -393,7 +402,7 @@ class _ScannerScreenState extends State<ScannerScreen>
                   // Logout button
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.15),
+                      color: Colors.white.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: IconButton(
@@ -452,8 +461,8 @@ class _ScannerScreenState extends State<ScannerScreen>
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
                   colors: [
-                    Colors.black.withValues(alpha: 0.95),
-                    Colors.black.withValues(alpha: 0.7),
+                    Colors.black.withOpacity(0.95),
+                    Colors.black.withOpacity(0.7),
                     Colors.transparent,
                   ],
                   stops: const [0.0, 0.7, 1.0],
@@ -474,7 +483,7 @@ class _ScannerScreenState extends State<ScannerScreen>
                         _getStepInstruction(),
                         key: ValueKey(_currentStep),
                         style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.7),
+                          color: Colors.white.withOpacity(0.7),
                           fontSize: 14,
                         ),
                       ),
@@ -488,7 +497,7 @@ class _ScannerScreenState extends State<ScannerScreen>
           // Loading overlay
           if (_isProcessing)
             Container(
-              color: Colors.black.withValues(alpha: 0.5),
+              color: Colors.black.withOpacity(0.5),
               child: const Center(
                 child: CircularProgressIndicator(
                   color: Colors.white,
@@ -524,7 +533,7 @@ class _ScannerScreenState extends State<ScannerScreen>
           Text(
             'Point camera at QR code',
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.6),
+              color: Colors.white.withOpacity(0.6),
               fontSize: 13,
             ),
           ),
@@ -540,7 +549,7 @@ class _ScannerScreenState extends State<ScannerScreen>
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             margin: const EdgeInsets.only(bottom: 16),
             decoration: BoxDecoration(
-              color: AppTheme.successGreen.withValues(alpha: 0.2),
+              color: AppTheme.successGreen.withOpacity(0.2),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Row(
@@ -614,14 +623,15 @@ class _ScannerScreenState extends State<ScannerScreen>
         ? AppTheme.successGreen
         : isActive
             ? (step == ScanStep.student ? AppTheme.primaryCoral : AppTheme.secondaryTeal)
-            : Colors.white.withValues(alpha: 0.3);
+            : Colors.white.withOpacity(0.3);
 
     return Column(
       children: [
         AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          width: 40,
-          height: 40,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeOutCubic,
+          width: isActive ? 48 : 40,
+          height: isActive ? 48 : 40,
           decoration: BoxDecoration(
             color: isCompleted || isActive ? color : Colors.transparent,
             shape: BoxShape.circle,
@@ -629,6 +639,15 @@ class _ScannerScreenState extends State<ScannerScreen>
               color: color,
               width: 2,
             ),
+            boxShadow: isActive
+                ? [
+                    BoxShadow(
+                      color: color.withOpacity(0.4),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    )
+                  ]
+                : [],
           ),
           child: Center(
             child: isCompleted
@@ -647,7 +666,7 @@ class _ScannerScreenState extends State<ScannerScreen>
         AnimatedDefaultTextStyle(
           duration: const Duration(milliseconds: 300),
           style: TextStyle(
-            color: isCompleted || isActive ? Colors.white : Colors.white.withValues(alpha: 0.4),
+            color: isCompleted || isActive ? Colors.white : Colors.white.withOpacity(0.4),
             fontSize: 12,
             fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
           ),
@@ -668,7 +687,7 @@ class _ScannerScreenState extends State<ScannerScreen>
         children: [
           // Background line
           Container(
-            color: Colors.white.withValues(alpha: 0.2),
+            color: Colors.white.withOpacity(0.2),
           ),
           // Animated fill
           AnimatedContainer(
@@ -736,7 +755,7 @@ class _ActionBottomSheet extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
-                  color: AppTheme.successGreen.withValues(alpha: 0.1),
+                  color: AppTheme.successGreen.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
@@ -831,19 +850,24 @@ class _ActionButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
           ),
           elevation: 4,
-          shadowColor: color.withValues(alpha: 0.4),
+          shadowColor: color.withOpacity(0.4),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, size: 32),
             const SizedBox(height: 4),
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 1,
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1,
+                  ),
+                ),
               ),
             ),
           ],

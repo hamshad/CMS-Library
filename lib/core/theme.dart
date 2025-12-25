@@ -61,50 +61,50 @@ class AppTheme {
         surface: backgroundWhite,
         error: errorRed,
       ),
-      textTheme: GoogleFonts.interTextTheme().copyWith(
-        displayLarge: GoogleFonts.inter(
+      textTheme: GoogleFonts.nunitoTextTheme().copyWith(
+        displayLarge: GoogleFonts.nunito(
           fontSize: 32,
           fontWeight: FontWeight.w700,
           color: textPrimary,
           letterSpacing: -0.5,
         ),
-        displayMedium: GoogleFonts.inter(
+        displayMedium: GoogleFonts.nunito(
           fontSize: 28,
           fontWeight: FontWeight.w600,
           color: textPrimary,
           letterSpacing: -0.3,
         ),
-        headlineLarge: GoogleFonts.inter(
+        headlineLarge: GoogleFonts.nunito(
           fontSize: 24,
           fontWeight: FontWeight.w600,
           color: textPrimary,
         ),
-        headlineMedium: GoogleFonts.inter(
+        headlineMedium: GoogleFonts.nunito(
           fontSize: 20,
           fontWeight: FontWeight.w600,
           color: textPrimary,
         ),
-        titleLarge: GoogleFonts.inter(
+        titleLarge: GoogleFonts.nunito(
           fontSize: 18,
           fontWeight: FontWeight.w500,
           color: textPrimary,
         ),
-        titleMedium: GoogleFonts.inter(
+        titleMedium: GoogleFonts.nunito(
           fontSize: 16,
           fontWeight: FontWeight.w500,
           color: textPrimary,
         ),
-        bodyLarge: GoogleFonts.inter(
+        bodyLarge: GoogleFonts.nunito(
           fontSize: 16,
           fontWeight: FontWeight.w400,
           color: textPrimary,
         ),
-        bodyMedium: GoogleFonts.inter(
+        bodyMedium: GoogleFonts.nunito(
           fontSize: 14,
           fontWeight: FontWeight.w400,
           color: textSecondary,
         ),
-        labelLarge: GoogleFonts.inter(
+        labelLarge: GoogleFonts.nunito(
           fontSize: 14,
           fontWeight: FontWeight.w600,
           color: textPrimary,
@@ -115,7 +115,7 @@ class AppTheme {
         foregroundColor: textPrimary,
         elevation: 0,
         centerTitle: true,
-        titleTextStyle: GoogleFonts.inter(
+        titleTextStyle: GoogleFonts.nunito(
           fontSize: 18,
           fontWeight: FontWeight.w600,
           color: textPrimary,
@@ -130,7 +130,7 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(radiusMedium),
           ),
-          textStyle: GoogleFonts.inter(
+          textStyle: GoogleFonts.nunito(
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
@@ -145,7 +145,7 @@ class AppTheme {
             borderRadius: BorderRadius.circular(radiusMedium),
           ),
           side: const BorderSide(color: borderColor, width: 1.5),
-          textStyle: GoogleFonts.inter(
+          textStyle: GoogleFonts.nunito(
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
@@ -171,11 +171,11 @@ class AppTheme {
           borderRadius: BorderRadius.circular(radiusMedium),
           borderSide: const BorderSide(color: errorRed),
         ),
-        hintStyle: GoogleFonts.inter(
+        hintStyle: GoogleFonts.nunito(
           fontSize: 16,
           color: textHint,
         ),
-        labelStyle: GoogleFonts.inter(
+        labelStyle: GoogleFonts.nunito(
           fontSize: 14,
           color: textSecondary,
         ),

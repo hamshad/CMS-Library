@@ -69,6 +69,19 @@ class _LoginScreenState extends State<LoginScreen>
         Password: _passwordController.text,
       );
 
+      // Enforce Librarian role
+      if (response.role != 'Librarian') {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Access Denied: Librarian role required'),
+            backgroundColor: AppTheme.errorRed,
+          ),
+        );
+        setState(() => _isLoading = false);
+        return;
+      }
+
       final prefs = await PreferencesService.getInstance();
       await prefs.saveLoginSession(
         uid: response.uid,

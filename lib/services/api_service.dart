@@ -2,18 +2,25 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 import 'package:http/http.dart' as http;
 import '../core/constants.dart';
+import '../core/exceptions.dart';
 
 /// Response model for login API
 class LoginResponse {
   final String uid;
   final String fullName;
+  final String role;
 
-  LoginResponse({required this.uid, required this.fullName});
+  LoginResponse({
+    required this.uid,
+    required this.fullName,
+    required this.role,
+  });
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) {
     return LoginResponse(
       uid: json['Uid']?.toString() ?? '',
       fullName: json['FullName']?.toString() ?? '',
+      role: json['Role']?.toString() ?? '',
     );
   }
 }
@@ -84,18 +91,34 @@ class ApiService {
 
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
+      
+      return _handleResponse(response);
 
-      developer.log('ISSUE BOOK RESPONSE STATUS: ${response.statusCode}');
-      developer.log('ISSUE BOOK RESPONSE BODY: ${response.body}');
-
-      if (response.statusCode == 200) {
-        return response.body;
-      } else {
-        throw Exception('Issue book failed: ${response.statusCode}');
-      }
     } catch (e) {
       developer.log('ISSUE BOOK ERROR: $e');
       rethrow;
+    }
+  }
+
+  Future<String> _handleResponse(http.Response response) async {
+    developer.log('RESPONSE STATUS: ${response.statusCode}');
+    developer.log('RESPONSE BODY: ${response.body}');
+
+    String? message;
+    try {
+      final json = jsonDecode(response.body);
+      if (json is Map<String, dynamic> && json.containsKey('Message')) {
+        message = json['Message']?.toString();
+      }
+    } catch (_) {
+      // Not JSON or parse error, fallback to raw string
+    }
+
+    if (response.statusCode == 200) {
+      return message ?? response.body;
+    } else {
+      // If error status code, throw ApiException with the message if available
+      throw ApiException(message ?? 'Request failed with status: ${response.statusCode}');
     }
   }
 
@@ -120,15 +143,8 @@ class ApiService {
 
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
-
-      developer.log('RETURN BOOK RESPONSE STATUS: ${response.statusCode}');
-      developer.log('RETURN BOOK RESPONSE BODY: ${response.body}');
-
-      if (response.statusCode == 200) {
-        return response.body;
-      } else {
-        throw Exception('Return book failed: ${response.statusCode}');
-      }
+      
+      return _handleResponse(response);
     } catch (e) {
       developer.log('RETURN BOOK ERROR: $e');
       rethrow;
