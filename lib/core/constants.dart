@@ -3,8 +3,8 @@ class AppConstants {
   AppConstants._();
 
   // API Configuration
-  // static const String baseUrl = 'https://cms.gurumishrihmc.edu.in';
-  static const String baseUrl = 'http://192.168.1.11:8025';
+  static const String baseUrl = 'https://cms.gurumishrihmc.edu.in';
+  // static const String baseUrl = 'http://192.168.1.11:8025';
 
   // Endpoints
   static const String loginEndpoint = '/api/User/Login';
