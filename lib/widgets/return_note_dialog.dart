@@ -11,6 +11,7 @@ class ReturnNoteDialog extends StatefulWidget {
 
 class _ReturnNoteDialogState extends State<ReturnNoteDialog> {
   final _noteController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -62,16 +63,25 @@ class _ReturnNoteDialogState extends State<ReturnNoteDialog> {
             ),
             const SizedBox(height: 20),
             // Text input
-            TextField(
-              controller: _noteController,
-              maxLines: 4,
-              decoration: InputDecoration(
-                hintText:
-                    'e.g., Book in good condition, minor wear on cover...',
-                hintStyle: const TextStyle(color: AppTheme.textHint),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+            Form(
+              key: _formKey,
+              child: TextFormField(
+                controller: _noteController,
+                maxLines: 4,
+                decoration: InputDecoration(
+                  hintText:
+                      'e.g., Book in good condition, minor wear on cover...',
+                  hintStyle: const TextStyle(color: AppTheme.textHint),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+                  ),
                 ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Return note cannot be empty';
+                  }
+                  return null;
+                },
               ),
             ),
             const SizedBox(height: 24),
@@ -88,7 +98,9 @@ class _ReturnNoteDialogState extends State<ReturnNoteDialog> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).pop(_noteController.text);
+                      if (_formKey.currentState?.validate() ?? false) {
+                        Navigator.of(context).pop(_noteController.text.trim());
+                      }
                     },
                     child: const Text('Submit'),
                   ),
